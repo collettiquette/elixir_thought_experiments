@@ -29,6 +29,7 @@ defmodule Life do
       Enum.each(row, fn cell -> IO.write(if (cell[:state]), do: 'X ', else: '- ') end)
       IO.puts ''
     end)
+    board
   end
   
   defp handle_fetch({:ok, value}) do
@@ -91,19 +92,18 @@ defmodule Life do
     end) end)
   end
 
-  defp tick(board) do
-    calculate_next_game_state(board) |> change_game_state()
-  end
-
   defp rest_and_clear_screen do
     :timer.sleep(100)
     IO.puts("\e[H\e[2J")
   end
+
+  defp tick(board) do
+    rest_and_clear_screen()
+    calculate_next_game_state(board) |> change_game_state() |> print_board()
+  end
   
   def loop(board) do
-    rest_and_clear_screen()
     board = tick(board)
-    print_board(board)
     loop(board)
   end
 end
